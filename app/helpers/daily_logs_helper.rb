@@ -1,0 +1,3 @@
+module DailyLogsHelper
+
+end

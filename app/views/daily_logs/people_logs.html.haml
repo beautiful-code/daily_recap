@@ -1,0 +1,30 @@
+#context1
+  .ui.secondary.menu
+    %div.item
+      List by
+    %a.item.active{"data-tab" => "first"} Date
+    %a.item{"data-tab" => "second"} People
+  .ui.tab.segment.active{"data-tab" => "first"}
+    .ui.top.attached.tabular.menu{:id => "datetabs"}
+      %a.active.item{"data-tab" => "first/a"}
+        #example1.ui.calendar
+          .ui.input.left.icon
+            %i.calendar.icon
+            %input.datechange{:placeholder => "Date/Time", :type => "text",:value => Date.today}
+      %a.item{"data-tab" => "first/b"}
+        =Date.yesterday
+      %a.item{"data-tab" => "first/c"}
+        =Date.yesterday.prev_day
+    .ui.bottom.attached.active.tab.segment.active.dynamic{"data-tab" => "first/a","dataval" =>"#{Date.today}"}
+      =render :partial => "daily_logs/user_summary",object: @log_summary,locals: { log_summary: @log_summary}
+    .ui.bottom.attached.tab.segment.dynamic{"data-tab" => "first/b","dataval" => "#{Date.yesterday}"}
+      =render :partial => "daily_logs/user_summary",object: @log_summary,locals: { log_summary: @log_summary}
+    .ui.bottom.attached.tab.segment.dynamic{"data-tab" => "first/c","dataval"=>"#{Date.yesterday.prev_day}"}
+      =render :partial => "daily_logs/user_summary",object: @log_summary,locals: { log_summary: @log_summary}
+  .ui.tab.segment{"data-tab" => "second"}
+    .user_list
+      =render 'user_list'
+.ui.divider
+
+:javascript
+  DailyLog();

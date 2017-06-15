@@ -1,0 +1,79 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "width=device-width, initial-scale=1, shrink-to-fit=no", :name => "viewport"}/
+    %meta{:content => "", :name => "description"}/
+    %meta{:content => "", :name => "author"}/
+    %link{:href => "../../favicon.ico", :rel => "icon"}/
+    %link{:href => "https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css", :rel => "stylesheet"}
+    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css", :rel => "stylesheet"}
+    %link{:href => "https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css", :rel => "stylesheet"}
+    /%link{:href => "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/tab.min.css", :rel => "stylesheet"}
+    %link{:href => "//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css", :rel => "stylesheet"}
+    %title DailyRecap
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_tag "window._token = '#{form_authenticity_token}'"
+    
+    %script{:src => "https://code.jquery.com/jquery-3.1.1.min.js",:integrity => "sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=",:crossorigin => "anonymous"}
+    
+  
+    %script(src="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js")
+    %script(src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js")
+
+    //%script(src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/tab.min.js")
+
+    %script(src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js")
+    %script(src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js")
+
+  %body
+    / Fixed navbar
+    / %nav.navbar.navbar-toggleable-md.navbar-inverse.fixed-top.bg-inverse
+    /   %button.navbar-toggler.navbar-toggler-right{"aria-controls" => "navbarCollapse", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarCollapse", "data-toggle" => "collapse", :type => "button"}
+    /     %span.navbar-toggler-icon
+    /   %a.navbar-brand{:href => "#"} DailyRecap
+    /   #navbarCollapse.collapse.navbar-collapse
+    /     %ul.navbar-nav.mr-auto
+    /       %li.nav-item.active
+    /         %a.nav-link{:href => "#"}
+    /           Home
+    /           %span.sr-only (current)
+    /       %li.nav-item
+    /         %a.nav-link{:href => "#"} Link
+    /       %li.nav-item
+    /         - if current_user
+    /           = link_to 'Logout', signout_path, :class => "nav-link"
+    /         - else
+    /           = link_to 'Login', "/auth/google_oauth2", :class => "nav-link"
+    /       %li.nav-item
+    /         %a.nav-link.disabled{:href => "#"} Disabled
+    /     %form.form-inline.mt-2.mt-md-0
+    /       %input.form-control.mr-sm-2{:placeholder => "Search", :type => "text"}/
+    /       %button.btn.btn-outline-success.my-2.my-sm-0{:type => "submit"} Search
+    / Begin page content
+    /.container
+    %div.toggled{:id=>"wrapper"}
+      %div{:id=>"sidebar-wrapper"}
+        %ul.sidebar-nav
+          %li.sidebar-brand
+            %a{:href=>"#"}
+              Daily recap
+        
+          %li
+            %a.active{:href=> new_daily_log_path}
+              My Logs
+          
+          %li
+            %a{:href=> people_logs_path}>
+              People Logs
+          %li
+            - if current_user
+              = link_to 'Logout', signout_path, :class => "nav-link"
+            - else
+              = link_to 'Login', "/auth/google_oauth2", :class => "nav-link"
+      %div{:id=>"page-content-wrapper"}
+        = yield
+              

@@ -1,0 +1,6 @@
+.nested-fields
+  .field
+    = f.label :description
+    %br
+    = f.text_field :log_text
+  = link_to_remove_association "remove task", f

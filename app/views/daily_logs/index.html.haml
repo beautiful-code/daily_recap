@@ -1,0 +1,6 @@
+%pre
+  Find me at `app/views/home/index.html.haml`
+- if current_user
+  = link_to 'fill the daily log', new_daily_log_path, class: 'btn btn-primary btn-lg' 
+- else
+  = link_to 'Login', "/auth/google_oauth2"

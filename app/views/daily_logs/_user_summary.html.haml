@@ -1,0 +1,36 @@
+-log_summary.each  do |_,value| 
+  %div.row
+    %div.col-md-8.page
+      .row
+        .col-md-4
+          %h2
+            =value[:name]
+        .col-md-8.pull-right
+          =value[:logdate]
+      %h3
+        Work
+      -value[:beautifulcode].each do |project,logtext|
+        %div
+          =project
+        %p
+          =logtext
+      -value[:clients].each do |client,records|
+        %h5
+          =client
+        -records.each do |pname,log|
+          %div
+            =pname
+          %p
+            =log
+
+      %h5
+        Learning
+      %p
+        =value[:learning]
+      %h5
+        TakeAway
+      %p
+        =value[:takeaway]
+  %br
+  %br
+  %br

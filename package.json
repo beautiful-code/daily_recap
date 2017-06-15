@@ -1,0 +1,7 @@
+{
+  "name": "daily_recap",
+  "private": true,
+  "dependencies": {
+    "semantic-ui": "^2.2.10"
+  }
+}
