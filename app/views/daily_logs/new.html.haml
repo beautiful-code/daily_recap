@@ -4,33 +4,36 @@
     %input{ "type"=>"text","name"=>"daterange"} 
 %div.row
   %div.col-md-4
-    = select_tag "projects_filter", options_for_select(@projects.map {|u| [u.name,u.id]}),{:include_blank => "All", :default => nil}
+    = select_tag "projects_filter", options_for_select(@projects.map {|u| [u.name,u.id]}),{:include_blank => "All", :default => nil,:class => "projects_filter"}
 %div.row
   %div.col-md-8.page
     = form_tag daily_logs_path, :method => :post do
       .row
+        .col-md-1 
+          = image_tag (image_url(current_user.picture )), class:"imagecircle"
         .col-md-4
-          %h2
+          %h4.centeralign
             =current_user.name
-        .col-md-8.pull-right
+        .col-md-7.pull-right
           =date_field_tag(:datetime_ida, Date.today)
-      %h3
+      %h3.headerclass
         Work
       %div.project
-        = select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()"
-        %div.task
-          %br
-          %h3
-            Task
-          %input.form-control{"maxlength"=>"300","name"=>"projects[]LogText[]","required"=>"required","type"=>"text","placeholder"  =>"  enter LogEntry"}
-        %br  
+        = select_tag "projects[id]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "Select project", :default => nil,:class => "added"
+        //%div.task
+        %br
+        %h5.task
+          Task
         %div
+          %input.form-control{"maxlength"=>"300","name"=>"projects[LogText][]","required"=>"required","type"=>"text","placeholder"  =>"  enter LogEntry"}
+          %div
+          %br
           %button.btn.btn-default.add_field_button{"id"=>"company"}
-            add more
-      %hr     
+            Add Task
+      %hr
       %div
         %button.btn.btn-default.add_project_button{}
-          add project
+          Add Project
       %hr
       %div
         %h3
@@ -46,7 +49,7 @@
           what are your takeaways?
         %input.form-control{"name"=>"takeaway","required"=>"required","type"=>"text","placeholder"  =>"  takeaways for the day "} 
         %hr
-        = submit_tag("Submit", class: "btn btn-success btn-md btn-md pull-right" ) 
+        = submit_tag("Submit", class: "btn btn-change btn-md btn-md pull-right" ) 
 %br
 %br
 %br

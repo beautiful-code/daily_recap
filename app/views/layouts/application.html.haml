@@ -30,50 +30,26 @@
     %script(src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js")
 
   %body
-    / Fixed navbar
-    / %nav.navbar.navbar-toggleable-md.navbar-inverse.fixed-top.bg-inverse
-    /   %button.navbar-toggler.navbar-toggler-right{"aria-controls" => "navbarCollapse", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarCollapse", "data-toggle" => "collapse", :type => "button"}
-    /     %span.navbar-toggler-icon
-    /   %a.navbar-brand{:href => "#"} DailyRecap
-    /   #navbarCollapse.collapse.navbar-collapse
-    /     %ul.navbar-nav.mr-auto
-    /       %li.nav-item.active
-    /         %a.nav-link{:href => "#"}
-    /           Home
-    /           %span.sr-only (current)
-    /       %li.nav-item
-    /         %a.nav-link{:href => "#"} Link
-    /       %li.nav-item
-    /         - if current_user
-    /           = link_to 'Logout', signout_path, :class => "nav-link"
-    /         - else
-    /           = link_to 'Login', "/auth/google_oauth2", :class => "nav-link"
-    /       %li.nav-item
-    /         %a.nav-link.disabled{:href => "#"} Disabled
-    /     %form.form-inline.mt-2.mt-md-0
-    /       %input.form-control.mr-sm-2{:placeholder => "Search", :type => "text"}/
-    /       %button.btn.btn-outline-success.my-2.my-sm-0{:type => "submit"} Search
-    / Begin page content
-    /.container
     %div.toggled{:id=>"wrapper"}
       %div{:id=>"sidebar-wrapper"}
         %ul.sidebar-nav
           %li.sidebar-brand
             %a{:href=>"#"}
-              Daily recap
-        
+              Daily Recap
           %li
             %a.active{:href=> new_daily_log_path}
               My Logs
           
           %li
-            %a{:href=> people_logs_path}>
+            %a{:href=> people_logs_path}
               People Logs
           %li
             - if current_user
-              = link_to 'Logout', signout_path, :class => "nav-link"
+              %a{:href => signout_path }
+                Logout
             - else
-              = link_to 'Login', "/auth/google_oauth2", :class => "nav-link"
+              %a{:href => "/auth/google_oauth2"}
+                Logout
       %div{:id=>"page-content-wrapper"}
         = yield
               

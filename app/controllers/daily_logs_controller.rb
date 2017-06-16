@@ -30,9 +30,10 @@ class DailyLogsController < ApplicationController
 
   def create
     ActiveRecord::Base.transaction do
-    daily_log=DailyLog.new.create_log(current_user.id,params[:takeaway],params[:datetime_ida])
+    daily_log=DailyLog.create(user_id: current_user.id,takeaway: params[:takeaway],log_date: params[:datetime_ida])
     count = 0
     count2=1
+    byebug
     while count<params[:projects].count do
     #params[:projects].each_with_index do |key, index|
     params[:projects][count2]["LogText"].each_with_index do |logtext|
