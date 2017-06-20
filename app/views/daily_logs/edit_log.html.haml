@@ -1,0 +1,85 @@
+%div.row
+  %div.col-md-8.page
+    .row
+      .col-md-4
+        %h2
+          =@edit_log[:name]
+        .col-md-8.pull-right.datecolor
+          =@edit_log[:logdate]
+      %h3
+        Work
+      -@edit_log[:beautifulcode].each do |project,logtext|
+        %div
+          =select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "#{project}", :default => nil,:class => "added"
+
+        %p
+          =logtext
+      -@edit_log[:clients].each do |client,records|
+        %h5
+          =client
+        -records.each do |project,logtext|
+          %div
+            =select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "#{project}", :default => nil,:class => "added"
+          %p
+            =text_field_tag("projects[]Logtext[]","#{logtext}")
+
+      %h5
+        Learning
+      %p
+        =text_field_tag("LearningLog","#{@edit_log[:learning]}")
+      %h5
+        TakeAway
+      %p
+        =text_field_tag("takeaway","#{@edit_log[:takeaway]}")
+  %br
+  %br
+  %br
+-#%div.row
+  -#%div.col-md-8.page
+    -#= form_tag daily_logs_path, :method => :post do
+      -#.row
+        -#.col-md-1 
+          -#= image_tag (image_url(current_user.picture )), class:"imagecircle"
+        -#.col-md-4
+          -#%h4.centeralign
+            -#=@edit_log[:name]
+        -#.col-md-7.pull-right
+          -#=date_field_tag(:datetime_ida, @edit_log[:logdate])
+      -#%h3.headerclass
+        -#Work
+      -#%div.project
+        -#=select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "Select project", :default => nil,:class => "added"
+        -#//%div.task
+        -#%br
+        -#%h5.task
+          -#Task
+        -#%div
+          -#%input.form-control{"maxlength"=>"300","name"=>"Logs[][LogText][]","required"=>"required","type"=>"text","placeholder"  =>"  enter LogEntry"}
+          -#%div
+          -#%br
+          -#%button.btn.btn-default.add_field_button{"id"=>"company"}
+            -#Add Task
+      -#%hr
+      -#%div
+        -#%button.btn.btn-default.add_project_button{}
+          -#Add Project
+      -#%hr
+      -#%div
+        -#%h3
+          -#Learning
+        -#%p 
+          -#what did you learn today?
+        -#%input.form-control{"name"=>"LearningLog","required"=>"required","type"=>"text","placeholder"  =>"  enter learning log "} 
+        -#%hr
+        -#%div
+        -#%h3
+          -#Takeaways 
+        -#%p 
+          -#what are your takeaways?
+        -#%input.form-control{"name"=>"takeaway","required"=>"required","type"=>"text","placeholder"  =>"  takeaways for the day "} 
+        -#%hr
+        -#= submit_tag("Submit", class: "btn btn-change btn-md btn-md pull-right" ) 
+-#%br
+-#%br
+-#%br
+

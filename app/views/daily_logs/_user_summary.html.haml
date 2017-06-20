@@ -2,7 +2,9 @@
   %div.row
     %div.col-md-8.page
       .row
-        .col-md-4
+        .col-md-1
+          = image_tag (image_url(value[:picture] )), class:"imagecircle"
+        .col-md-3
           %h2
             =value[:name]
         .col-md-8.pull-right.datecolor
@@ -10,27 +12,29 @@
       %h3
         Work
       -value[:beautifulcode].each do |project,logtext|
-        %div
+        %button.btn.btn-default.btn-arrow-left
           =project
         %p
           =logtext
       -value[:clients].each do |client,records|
-        %h5
-          =client
         -records.each do |pname,log|
-          %div
+          %a.ui.tag.label
             =pname
           %p
             =log
+      %hr
 
       %h5
         Learning
       %p
         =value[:learning]
+      %hr
       %h5
         TakeAway
-      %p
+      %div{display:"list-item"}
         =value[:takeaway]
+      %div
+        =link_to "Edit log",edit_log_path(:log_id => value[:log_id])
   %br
   %br
   %br
