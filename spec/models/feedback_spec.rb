@@ -7,15 +7,12 @@ RSpec.describe Feedback, type: :model do
       expect(feedbackentry).to respond_to(msg)
     end
   end
-<<<<<<< HEAD
   it "should belongs to user" do
-    t = Feedback.reflect_on_association(:user)
-    t.macro.should == :belongs_to
+    association = Feedback.reflect_on_association(:user)
+    association.macro.should == :belongs_to
   end
   it "should belongs to daily_log" do
-    t = Feedback.reflect_on_association(:daily_log)
-    t.macro.should == :belongs_to
+    association = Feedback.reflect_on_association(:daily_log)
+    association.macro.should == :belongs_to
   end
-=======
->>>>>>> 3b127cb9e81258aac7731555728298c01f41f6d8
 end

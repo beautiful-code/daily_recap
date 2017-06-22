@@ -10,13 +10,13 @@ function DailyLog() {
       var attrid="projects[]";
       $('.newproject').attr('name',attrid).append($('#projects_').html());
       $('.newproject').removeClass('newproject');
-      //if ($('.newproject').html().length==0)
-         //$('.newproject').empty().append($('#projects_').html());
-
     });
 
   $(document).ready(function() {
     $('input[name="daterange"]').daterangepicker();
+    //$('#datetime_ida').datepicker({
+      //endDate: "+0d";
+    //})
   });
   $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
     var project_id= $("#projects_filter").val();
@@ -25,7 +25,16 @@ function DailyLog() {
   $('.projects_filter').change(alert_me_test);
   function alert_me_test(){
     var project_id= $("#projects_filter").val();
-    $('.user_summary').load('/daily_logs/user_logs',{"project_id": project_id});
+    var datepicker = $('input[name="daterange"]').data('daterangepicker');
+    var today=moment().format('DD-MMM-YYYY');
+    if(datepicker.startDate.format('DD-MMM-YYYY')==today)
+    {
+      $('.user_summary').load('/daily_logs/user_logs',{"project_id": project_id});
+    }
+    else
+    {
+      $('.user_summary').load('/daily_logs/user_logs',{start_date:datepicker.startDate.format('YYYY-MM-DD'),end_date:datepicker.endDate.format('YYYY-MM-DD'),"project_id": project_id});
+    }
   }
   $('#context1 .menu .item')
     .tab({
