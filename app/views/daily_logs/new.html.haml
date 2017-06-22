@@ -1,6 +1,7 @@
 %div.container-fluid
 %div.row
   %div.col-md-4
+    -#remove commented out code
     -#%input{ "type"=>"text","name"=>"daterange"}
     -#%i.fa.fa-calendar.form-control-feedback
     #calendar2.ui
@@ -11,6 +12,7 @@
   %div.col-md-4
     = select_tag "projects_filter", options_for_select(@projects.map {|u| [u.name,u.id]}),{:include_blank => "All", :default => nil,:class => "projects_filter"}
 -if(@user_log_summary[0][:logdate] !=Date.today().strftime("%v"))
+  -#move this code to partial
   %div.row
     %div.col-md-8.page
       = form_tag daily_logs_path, :method => :post do

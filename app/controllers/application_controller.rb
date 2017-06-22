@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  #TODO add authencticate_user in before action
   protect_from_forgery with: :exception
 
   helper_method :current_user
