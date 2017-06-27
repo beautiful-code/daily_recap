@@ -48,9 +48,7 @@ RSpec.describe User, type: :model do
   #end
 
 
-  # pending 'should not create a new user if the user already exists'
-
-  context 'when authentication fails' do
+    context 'when authentication fails' do
     # describe what happens when authentication fails.
   end
 
@@ -58,5 +56,5 @@ end
 
 
 
-#pending "add some examples to (or delete) #{__FILE__}"
+
 

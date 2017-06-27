@@ -15,9 +15,6 @@ Rails.application.routes.draw do
 
   resources :sessions, only: [:create, :destroy]
   resources :daily_logs, only: [:new, :create]
-  # resources :daily_logs do
-  #   get "/daily_logs/new", on: :collection 
-  # end
   resources :projects
 
   root :to => 'daily_logs#index'

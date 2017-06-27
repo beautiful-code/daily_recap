@@ -8,57 +8,58 @@
 %div.row
   %div.col-md-4
     = select_tag "projects_filter", options_for_select(@projects.map {|u| [u.name,u.id]}),{:include_blank => "All", :default => nil,:class => "projects_filter"}
--if(@user_log_summary[0][:logdate] !=Date.today().strftime("%v"))
+-#if(!@user_log_summary.empty? && (@user_log_summary[0][:logdate] !=Date.today().strftime("%v"))
   -#move this code to partial
-  %div.row
-    %div.col-md-8.page
-      = form_tag daily_logs_path, :method => :post do
-        .row
-          .col-md-1 
-            = image_tag (image_url(current_user.picture )), class:"imagecircle"
-          .col-md-4
-            %h4.centeralign
-              =current_user.name
-          .col-md-7.pull-right
-            =date_field_tag(:datetime_ida, Date.today)
-        %h3.headerclass
-          Work
-        %div.project
-          = select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:class => "added",:prompt => "Select Project", :required => "required" 
+%div.row
+  %div.col-md-8.page
+    = form_tag daily_logs_path, :method => :post do
+      .row
+        .col-md-1 
+          = image_tag (image_url(current_user.picture )), class:"imagecircle"
+        .col-md-4
+          %h4.centeralign
+            =current_user.name
+        .col-md-7.pull-right
+          =date_field_tag(:datetime_ida, Date.today)
+      %h3.headerclass
+        Work
+      %div.project
+        = select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:class => "added",:prompt => "Select Project", :required => "required" 
+        %br
+        %h5.task
+          Task
+        %div
+          %input.form-control{"maxlength"=>"300","required"=>"required","type"=>"text","placeholder"  =>"  enter LogEntry"}
+          %div
           %br
-          %h5.task
-            Task
-          %div
-            %input.form-control{"maxlength"=>"300","required"=>"required","type"=>"text","placeholder"  =>"  enter LogEntry"}
-            %div
-            %br
-            %button.btn.btn-default.add_field_button{"id"=>"company"}
-              Add Task
+          %button.btn.btn-default.add_field_button{"id"=>"company"}
+            Add Task
+      %hr
+      %div
+        %button.btn.btn-default.add_project_button{}
+          Add Project
+      %hr
+      %div
+        %h3
+          Learning
+        %p 
+          what did you learn today?
+        %input.form-control{"name"=>"log_entry[4][]","required"=>"required","type"=>"text","placeholder"  =>"  enter learning log "} 
         %hr
         %div
-          %button.btn.btn-default.add_project_button{}
-            Add Project
+        %h3
+          Takeaways 
+        %p 
+          what are your takeaways?
+        %input.form-control{"name"=>"takeaway","required"=>"required","type"=>"text","placeholder"  =>"  takeaways for the day "} 
         %hr
-        %div
-          %h3
-            Learning
-          %p 
-            what did you learn today?
-          %input.form-control{"name"=>"log_entry[4][]","required"=>"required","type"=>"text","placeholder"  =>"  enter learning log "} 
-          %hr
-          %div
-          %h3
-            Takeaways 
-          %p 
-            what are your takeaways?
-          %input.form-control{"name"=>"takeaway","required"=>"required","type"=>"text","placeholder"  =>"  takeaways for the day "} 
-          %hr
-          = submit_tag("Submit", class: "btn btn-change btn-md btn-md pull-right" ) 
-  %br
-  %br
-  %br
+        = submit_tag("Submit", class: "btn btn-change btn-md btn-md pull-right" ) 
+%br
+%br
+%br
 .user_summary
-  =render :partial => "daily_logs/user_summary",object: @user_log_summary,locals: { log_summary: @user_log_summary}
+  - if @user_log_summary
+    =render :partial => "daily_logs/user_summary",object: @user_log_summary,locals: { log_summary: @user_log_summary}
 
 
 
