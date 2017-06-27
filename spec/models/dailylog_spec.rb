@@ -9,12 +9,12 @@ RSpec.describe DailyLog, type: :model do
   end
 
   it "should have many log_entries" do
-    t = DailyLog.reflect_on_association(:log_entries)
-    t.macro.should == :has_many
+    association = DailyLog.reflect_on_association(:log_entries)
+    association.macro.should == :has_many
   end
   it 'should belong to a user' do
-     t = DailyLog.reflect_on_association(:user)
-    t.macro.should == :belongs_to
+     association = DailyLog.reflect_on_association(:user)
+    association.macro.should == :belongs_to
   end
   # describe :create_record do
   #   log=DailyLog.new

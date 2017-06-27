@@ -1,7 +1,7 @@
 %div.user_summary
   %div.row
     %div.col-md-8.page
-      =form_tag finish_edit_path, :method => :post do
+      =form_tag update_path, :method => :post do
         .row
           .col-md-1 
             = image_tag (image_url(@edit_log[:picture] )), class:"imagecircle"
@@ -21,9 +21,9 @@
             %div
               %div
                 -logtexts.each do |logtext|
-                  =text_field_tag("Logtext["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
+                  =text_field_tag("log_entries["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
                   %br
-              %button.btn.btn-default.add_field_button{"id"=>"company"}
+              %button.btn.btn-default.add_field_button
                 Add Task
           %br
         %div.project
@@ -37,7 +37,7 @@
                 %div
                   %div
                     -logtexts.each do |logtext|
-                      =text_field_tag("Logtext["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
+                      =text_field_tag("log_entries["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
                       %br
                   %button.btn.btn-default.add_field_button{"id"=>"company"}
                     Add Task
@@ -49,7 +49,7 @@
         %h5
           Learning
         %p
-          =text_field_tag("Learning_log","#{@edit_log[:learning]}",:class => "form-control")
+          =text_field_tag("learning_log","#{@edit_log[:learning]}",:class => "form-control")
         %h5
           TakeAway
         %p

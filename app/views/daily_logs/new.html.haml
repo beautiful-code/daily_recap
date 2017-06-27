@@ -1,9 +1,6 @@
 %div.container-fluid
 %div.row
   %div.col-md-4
-    -#remove commented out code
-    -#%input{ "type"=>"text","name"=>"daterange"}
-    -#%i.fa.fa-calendar.form-control-feedback
     #calendar2.ui
       .ui.input.left.icon
         %i.calendar.icon
@@ -47,7 +44,7 @@
             Learning
           %p 
             what did you learn today?
-          %input.form-control{"name"=>"learning_log","required"=>"required","type"=>"text","placeholder"  =>"  enter learning log "} 
+          %input.form-control{"name"=>"log_entry[4][]","required"=>"required","type"=>"text","placeholder"  =>"  enter learning log "} 
           %hr
           %div
           %h3

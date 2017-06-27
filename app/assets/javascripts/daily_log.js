@@ -2,7 +2,7 @@ function DailyLog() {
   $(document).delegate('.add_field_button', 'click', function()
     {
       var project_id= $(this).parent().parent().children().eq(0).val();
-      $(this).parent().children().eq(1).append("<br><input type='text'  class='form-control' maxlength='300' name='Log_entry["+project_id+"][]' placeholder='enter LogEntry' required='required' ></input>");
+      $(this).parent().children().eq(1).append("<br><input type='text'  class='form-control' maxlength='300' name='log_entry["+project_id+"][]' placeholder='enter LogEntry' required='required' ></input>");
     });
   $(document).delegate('.add_project_button', 'click', function()
     {
@@ -14,9 +14,6 @@ function DailyLog() {
 
   $(document).ready(function() {
     $('input[name="daterange"]').daterangepicker();
-    //$('#datetime_ida').datepicker({
-      //endDate: "+0d";
-    //})
   });
   $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
     var project_id= $("#projects_filter").val();
@@ -69,7 +66,7 @@ function DailyLog() {
   $(document).delegate('.added', 'change', function()
     {
       var project_id =$(this).val();
-      var name= 'Log_entry['+project_id+'][]';
+      var name= 'log_entry['+project_id+'][]';
       $(this).next().next().next().children().eq(1).children().filter('.form-control').attr('name',name);
       $(this).next().next().next().children().filter('.form-control').attr('name',name);
     });

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'daily_logs/user_list', :to => 'daily_logs#user_list'
   match 'daily_logs/user_logs', :to => 'daily_logs#user_logs', via:[:GET,:POST]
   match 'daily_logs/edit_log', :to => 'daily_logs#edit_log', via:[:GET,:POST],as:'edit_log'
-  match 'daily_logs/finish_edit', :to =>'daily_logs#finish_edit',via: [:POST], as:'finish_edit'
+  match 'daily_logs/update', :to =>'daily_logs#update',via: [:POST], as:'update'
 
   resources :sessions, only: [:create, :destroy]
   resources :daily_logs, only: [:new, :create]
