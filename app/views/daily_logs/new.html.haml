@@ -59,6 +59,7 @@
 %br
 .user_summary
   - if @user_log_summary
+    -##TODO why are sending @user_log_summary twice
     =render :partial => "daily_logs/user_summary",object: @user_log_summary,locals: { log_summary: @user_log_summary}
 
 
