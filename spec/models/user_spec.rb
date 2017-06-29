@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-
+  let(:user) { User.create(name: 'test', email: 'test@beautifulcode.in') }
   describe :from_omniauth do
     it 'should get  user details from oauth after successful authentication' do
       OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
@@ -37,6 +37,17 @@ RSpec.describe User, type: :model do
     association = User.reflect_on_association(:projects)
     association.macro.should == :has_and_belongs_to_many
   end
+  describe 'validations' do
+    it 'should have valid name' do
+      user.update_attributes(name: nil)
+      expect(user.errors).to include(:name)
+    end
+
+    it 'should have valid email' do
+      user.update_attributes(email: nil)
+      expect(user.errors).to include(:email)
+    end
+  end
   #context 'when newly created' do
   #it 'should return an empty collection for projects' do
   #User.joins(:project).where('id=?',user.id).count.should == 0
@@ -48,7 +59,7 @@ RSpec.describe User, type: :model do
   #end
 
 
-    context 'when authentication fails' do
+  context 'when authentication fails' do
     # describe what happens when authentication fails.
   end
 

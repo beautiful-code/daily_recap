@@ -16,5 +16,7 @@ RSpec.describe LogEntry, type: :model do
     association = LogEntry.reflect_on_association(:project)
     association.macro.should == :belongs_to
   end
+  it "should have valid log_text" do
 
+  end
 end

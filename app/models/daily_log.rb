@@ -1,6 +1,7 @@
 class DailyLog < ApplicationRecord
   has_many :log_entries, :class_name => 'LogEntry',:dependent => :delete_all
   belongs_to :user
+  validates :user_id, presence: true
   include ApplicationHelper
 
   #TODO create_user_summary would have been a better name
@@ -36,6 +37,7 @@ class DailyLog < ApplicationRecord
     summary_record[:beautifulcode] = beautifulcode_log_record(project_id)
     summary_record[:clients] = self.clients_project_log_record(project_id)
     summary_record[:logdate] = self.log_date.strftime('%v')
+    byebug
     summary_record
   end
 
