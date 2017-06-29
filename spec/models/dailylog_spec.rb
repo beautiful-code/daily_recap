@@ -20,17 +20,24 @@ RSpec.describe DailyLog, type: :model do
   it "should have many log_entries" do
     association = DailyLog.reflect_on_association(:log_entries)
     association.macro.should == :has_many
+
+    expect(association.macro).to eq(:has_many)
   end
+
   it 'should belong to a user' do
     association = DailyLog.reflect_on_association(:user)
+    #TODO refactor this
     association.macro.should == :belongs_to
   end
 
   it 'should have only one dailylog entry for given date for given user' do
     @dailylog = DailyLog.where(log_date: Date.today,user_id: 1)
-    expect(@dailylog.count). to be <= 1
+    #expect(@dailylog.count). to be <= 1
+
+    expect(@dailylog.count).to eq(1)
   end
-  it 'associated log entries should be destroyed on deletion' do
+
+  it 'should delete all associated log entries on deleting daily log' do
     #count = DailyLog.first.log_entries.count
     #total_count = LogEntry.all.count
     #DailyLog.first.destroy
@@ -43,6 +50,23 @@ RSpec.describe DailyLog, type: :model do
     it 'should have valid user_id' do
       daily_log.update_attributes(user_id: nil)
       expect(daily_log.errors).to include(:user_id)
+    end
+
+  end
+
+  describe :user_create_summary do
+    context "when project id is nil" do
+      it "should return daily logs for als projects" do
+
+      end
+    end
+
+    context "when project id is not nil" do
+
+    end
+
+    context "when project_id and query_hash are not present and log date is present" do
+
     end
 
   end
