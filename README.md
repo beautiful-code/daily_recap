@@ -14,6 +14,9 @@ bundle exec rake db:create # To create the database
 
 bundle exec rake db:migrate # To run the migrations
 
+bundle exec rake db:seed #to run the seed file:
+
 bundle exec rails s # Start the rails server.
+
 
 Open 'http://localhost:3000' in your browser.
