@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Feedback, type: :model do
+  #TODO change feedbackentry feedback_entry
   let(:feedbackentry) { FactoryGirl.build(:feedback) }
    [:feedback_text, :user_id,:daily_log_id].each do |msg|
     it "should respond to #{msg}" do

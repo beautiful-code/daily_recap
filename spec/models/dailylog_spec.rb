@@ -14,6 +14,7 @@ RSpec.describe DailyLog, type: :model do
     log_entry.daily_log_id=daily_log.id
     log_entry.project_id=project.id
     log_entry.save
+    #TODO learning_project = Project.create(name: "Learning", client_name: "Learning")
     learning_project.name="Learning"
     learning_project.client_name="Learning"
     learning_project.save
@@ -21,6 +22,7 @@ RSpec.describe DailyLog, type: :model do
     learning.project_id=learning_project.id
     learning.log_text ="advanced jquery"
     learning.save
+    #TODO chnage this same as above one
     revdirect.name="revdirect"
     revdirect.client_name="Sojern"
     revdirect.save
@@ -59,6 +61,7 @@ RSpec.describe DailyLog, type: :model do
     total_count =LogEntry.all.count
     daily_log.destroy
 
+    #TODO instead you can check expect(daily_log.log_entries.count).to eq(0)
     expect(LogEntry.all.count).to eq(total_count-count)
   end
 
@@ -68,10 +71,13 @@ RSpec.describe DailyLog, type: :model do
 
       expect(daily_log.errors).to include(:user_id)
     end
+    #TODO when you add custom validation to restrict one daily_log record per user per given date add specs for it
 
   end
 
+  #TODO it should be create_user_summary
   describe :user_create_summary do
+    #TODO when params.present? if false write case for it
     context "when project id is nil" do
       it "should return daily logs for all projects" do
         params= { user_id: user.id }
@@ -99,6 +105,7 @@ RSpec.describe DailyLog, type: :model do
 
   describe :create_summary_record do
     before do
+      #TODO instead of returning nil return what sample data of what that method actually should return
       allow(daily_log).to receive(:clients_project_log_record).and_return nil
     end
     it 'should return formatted daily log record' do
@@ -107,6 +114,8 @@ RSpec.describe DailyLog, type: :model do
       expect(record.keys).to match_array([:name, :takeaway, :learning,:clients,:log_id,:logdate,:picture,:user_id])
     end
   end
+  #TODO add empty line after every block
+  ##TODO write specs for methods in the same order as written in model file
   describe :build_query_hash do 
     context "when date filter applied" do
       it "should return valid hash" do
@@ -142,6 +151,7 @@ RSpec.describe DailyLog, type: :model do
         expect(record.values.first.keys).to match_array(["revdirect"])
       end
     end
+    #TODO add a case to test that record.values.first.keys not to include "learning"
   end
 end
 

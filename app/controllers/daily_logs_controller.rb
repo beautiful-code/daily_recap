@@ -1,15 +1,22 @@
 class DailyLogsController < ApplicationController
   include DailyLogsHelper
   skip_before_action :verify_authenticity_token
+  #TODO change the flow, so that you even need to authenticate_user on index action
   before_action  :authenticate_user, :except=>[:index]
 
   def new
     @daily_log = current_user.daily_logs.new
+    #TODO dont hard code learning project
     @projects = Project.where("name != 'Learning'")
+    #TODO use space after comma, prefer named arguments, last parameter you are sending is nil but I dont know which
+    # value you are sending nil, if you args looks like this DailyLog.create_user_summary(something: nil)
+    # it would be better
     @user_log_summary = DailyLog.create_user_summary(params,current_user.id,params[:project_id],nil)
   end
 
   def create
+    #TODO move this logic to model it should return flags respectively, so that you can set flash messages here
+    # after moving this to a method write specs for it
     if(DailyLog.where(user_id: current_user.id,log_date:params[:datetime_ida]).count==0)
       begin
         ActiveRecord::Base.transaction do
@@ -52,11 +59,14 @@ class DailyLogsController < ApplicationController
 
   def edit_log
     @edit_log = DailyLog.find(params[:daily_log_id]).create_summary_record(nil)
+    #TODO dont hard code values
     @projects = Project.where("name != 'Learning'")
     @daily_log_id = params[:daily_log_id]
   end
 
   def update
+    #TODO move this logic to model method, change update_daily_log_and_log_entries to
+    # to do all this logic
     begin
       ActiveRecord::Base.transaction do
         DailyLog.find(params[:daily_log_id]).update_daily_log_and_log_entries(params[:log_entries],params[:learning_log],params[:takeaway])

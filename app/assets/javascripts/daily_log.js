@@ -48,6 +48,7 @@ function DailyLog() {
     maxDate: new Date(today.getFullYear(), today.getMonth(), today.getDate())
   })
   $('.top.menu .item').tab({'onVisible':function(){
+    // TODO dont you need to put semi colon at EOL
     var newValue = $(this).attr("dataval")
     $('.dynamic').load('/daily_logs/refresh',{ "log_date":newValue});
   }});
@@ -57,6 +58,7 @@ function DailyLog() {
   });
 
   $('.secondary.menu .item').tab({'onVisible':function(){
+    // TODO use proper variable names
     var x=$(this).attr('data-tab');
     if(x=="first")
       location.reload();

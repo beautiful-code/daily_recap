@@ -16,6 +16,7 @@ RSpec.describe Project, type: :model do
     association = Project.reflect_on_association(:log_entries)
     association.macro.should == :has_many
   end
+  #TODO why did you comment below code, complete it
   #context 'when newly created' do
     #it 'should not have any log entries' do
     #count =  LogEntry.joins(:project).where("projects.id=#{project.id}").count

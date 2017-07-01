@@ -25,10 +25,12 @@ RSpec.describe User, type: :model do
       expect(user.email).to eq('dummy@dummy.com')
       expect(user.oauth_token).to eq('dummy')
       #expect(user.token_expires_at).to eq(123_456)
+      ##TODO remove unneccessary empty lines
 
 
     end
   end
+  #TODO add empty line after each test case
   it "should have many daily_logs" do
     association = User.reflect_on_association(:daily_logs)
     association.macro.should == :has_many
@@ -60,6 +62,7 @@ RSpec.describe User, type: :model do
 
 
   context 'when authentication fails' do
+    #TODO complete this behaviour
     # describe what happens when authentication fails.
   end
 
