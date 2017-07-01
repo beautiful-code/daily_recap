@@ -1,3 +1,4 @@
+// TODO you should put css related different pages in different files
 // Custom bootstrap variables must be set or imported *before* bootstrap.
 @import "bootstrap";
 
@@ -12,15 +13,6 @@ body {
   margin-bottom: 60px;
   background-color: #f2f2f2;
 }
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
-  background-color: #f5f5f5;
-}
 
 
 /* Custom page CSS
@@ -31,10 +23,6 @@ body > .container {
   padding: 60px 15px 0;
 }
 
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
-}
 
 code {
   font-size: 80%;
@@ -50,7 +38,11 @@ code {
 #wrapper.toggled {
     padding-left: 250px;
 }
-
+.task
+{
+  padding-top:10px;
+  padding-bottom:5px
+}
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
@@ -64,15 +56,30 @@ code {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    background-color:#394051;
 }
 .page
 {
   background-color:white;
   width : 50%;
+  padding-top:30px;
+}
+.centeralign
+{
+  padding-top:9px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
     width: 250px;
+}
+.headerclass
+{
+  padding-top:15px;
+  padding-bottom:5px;
+}
+.datecolor
+{
+  color:#55B6AE;
 }
 
 #page-content-wrapper {
@@ -88,7 +95,6 @@ code {
 }
 
 /* Sidebar Styles */
-
 .sidebar-nav {
     position: absolute;
     top: 0;
@@ -106,18 +112,18 @@ code {
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color:white ;
 }
 
 .sidebar-nav li a:hover {
     text-decoration: none;
-    color: #fff;
+    color: #f0f0f0;
     background: rgba(255,255,255,0.2);
 }
 
 .sidebar-nav li a:active,
 .sidebar-nav li a:focus {
-    color : #ffff;
+    color : #484848;
 }
 a.active
 {
@@ -130,16 +136,16 @@ a.active
 }
 
 .sidebar-nav > .sidebar-brand a {
-    color: #999999;
-}
+    color: white;
+  }
 
 .sidebar-nav > .sidebar-brand a:hover {
     color: #fff;
     background: none;
 }
-input[type="text"]
+.form-control
 {
-  width:50%;
+  width:100%;
 }
 #reportrange
 {
@@ -149,6 +155,12 @@ input[type="text"]
   border: 1px solid #ccc; 
   width: 100%;
 }
+#datetime_ida
+{
+  border-color: #55B6AE;
+  color: #55b6ae;
+  background-color: white;
+}
 .pull-right
 {
   text-align:right;
@@ -156,8 +168,8 @@ input[type="text"]
 }
 .btn-default
 {
-  border: 2px solid #1aff1a;
-  color: #1aff1a;
+  border: 2px solid #45CDC5;
+  color: #45CDC5;
   background-color:white;
 
 }
@@ -165,6 +177,13 @@ input[type="text"]
 {
   width:75%;
 }
+.projects_filter
+{
+  width: 25%;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  height: 35px;
+  }
 .imageclass
 {
   height: 150px ;
@@ -175,4 +194,90 @@ input[type="text"]
   display: block;
   margin-left: auto;
   margin-right: auto;
-  }
+}
+.btn-change
+{
+  background-color:#55B6AE;
+  border-color:#55B6AE;
+  color:white;
+  margin-bottom:20px;
+ 
+}
+.added
+{
+  width: 28%;
+  height: 40px;
+  background-color: white;
+  border-color: #E9E9E9;
+}
+.imagecircle
+{
+ border-radius: 50%;
+ width:50px;
+ height:50px;
+}
+.btn { /* just for this demo. */
+    margin-top: 5px;
+}
+.btn-arrow-right,
+.btn-arrow-left {
+    position: relative;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+.btn-arrow-right {
+    padding-left: 20px;
+}
+.btn-arrow-left {
+    padding-right: 20px;
+    height: 12%;
+}
+.btn-arrow-right:before,
+.btn-arrow-right:after,
+.btn-arrow-left:before,
+.btn-arrow-left:after { /* make two squares (before and after), looking similar to the button */
+    content:"";
+    position: absolute;
+    top: 5px; /* move it down because of rounded corners */
+    width: 22px; /* same as height */
+    height: 22px; /* button_outer_height / sqrt(2) */
+    background: inherit; /* use parent background */
+    border: inherit; /* use parent border */
+    border-left-color: transparent; /* hide left border */
+    border-bottom-color: transparent; /* hide bottom border */
+    border-radius: 0px 4px 0px 0px; /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
+    -webkit-border-radius: 0px 4px 0px 0px;
+    -moz-border-radius: 0px 4px 0px 0px;
+}
+.btn-arrow-right:before,
+.btn-arrow-right:after {
+    transform: rotate(45deg); /* rotate right arrow squares 45 deg to point right */
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+}
+.btn-arrow-left:before,
+.btn-arrow-left:after {
+    transform: rotate(225deg); /* rotate left arrow squares 225 deg to point left */
+    -webkit-transform: rotate(225deg);
+    -moz-transform: rotate(225deg);
+    -o-transform: rotate(225deg);
+    -ms-transform: rotate(225deg);
+}
+.btn-arrow-right:before,
+.btn-arrow-left:before { /* align the "before" square to the left */
+    left: -11px;
+}
+.btn-arrow-right:after,
+.btn-arrow-left:after { /* align the "after" square to the right */
+    right: -11px;
+}
+.btn-arrow-right:after,
+.btn-arrow-left:before { /* bring arrow pointers to front */
+    z-index: 0;
+}
+.btn-arrow-right:before,
+.btn-arrow-left:after { /* hide arrow tails background */
+    background-color: white;
+}

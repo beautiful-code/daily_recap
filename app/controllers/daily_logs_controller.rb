@@ -1,90 +1,72 @@
 class DailyLogsController < ApplicationController
   include DailyLogsHelper
   skip_before_action :verify_authenticity_token
-  def new
-  	#@projects=Project.where(client_name: Project::BEAUTIFUL_CODE_CLIENT)
-    @daily_log =current_user.daily_logs.new
-    @projects=Project.all
-    if(!params[:start_date].nil?)
-       session[:start_date] =params[:start_date]
-       session[:end_date]=params[:end_date]
-    end
-    if(params[:project_id].nil? != true )
-      if(params[:project_id].empty?)
-       session[:project_id]=nil
-      else
-       session[:project_id] =params[:project_id]
-     end
-    end
+  before_action  :authenticate_user, :except=>[:index]
 
-    query_hash = {}
-    query_hash.merge!(user_id: current_user.id)
-    if(session[:start_date] != nil)
-      query_hash.merge!(log_date: session[:start_date]..session[:end_date])
-    else
-      query_hash.merge!(log_date: 1.week.ago..Date.today)
-    end
-      @user_log_summary=@daily_log.user_create_summary(query_hash,session[:project_id])
-  
+  def new
+    @daily_log = current_user.daily_logs.new
+    @projects = Project.where("name !='"+Project::LEARNING+"'") 
+    @user_log_summary = DailyLog.create_user_summary(params,current_user.id, params[:project_id],log_date:nil)
   end
 
   def create
-    ActiveRecord::Base.transaction do
-    daily_log=DailyLog.new.create_log(current_user.id,params[:takeaway],params[:datetime_ida])
-    count = 0
-    count2=1
-    while count<params[:projects].count do
-    #params[:projects].each_with_index do |key, index|
-    params[:projects][count2]["LogText"].each_with_index do |logtext|
-      #entry=LogEntry.new.create_logentry(params[:projects][count].to_i, logtext,daily_log.id)
-      daily_log.log_entries.new.create_logentry(params[:projects][count].to_i, logtext)
+    if(DailyLog.check_log_entry_exists(current_user.id,params[:datetime_ida]))
+      begin
+        ActiveRecord::Base.transaction do
+          daily_log = current_user.daily_logs.create(takeaway: params[:takeaway],log_date: params[:datetime_ida])
+          params[:log_entry].each do |project_id,log_texts|
+            log_texts.each do |logtext|
+              daily_log.log_entries.create(project_id:project_id.to_i,log_text:logtext)
+            end
+          end
+        end
+      rescue
+        flash[:info] = "Error occured,please try again"
+        redirect_to new_daily_log_path
+      end
+      flash[:success] = "Daily log record is successfully created"
+      redirect_to new_daily_log_path
+    else
+      flash[:info] = "You have already entered daily_log for this day"
+      redirect_to new_daily_log_path
     end
-    count =count+2;
-    count2=count2+2;
-    end
-    daily_log.log_entries.new.create_logentry(4,params[:LearningLog])
-    #learning=LogEntry.new.create_logentry(4,params[:LearningLog],daily_log.id)
-  end
-    
-    redirect_to summary_path
-    #TODO handle case when records are not saved, show flash message
   end
 
   def index
   end
 
-  #TODO change this action to index action
-  def summary
-    @log_summary=DailyLog.new.create_summary(log_date: Date.today)
-  end
-
   def people_logs
-     @log_summary=DailyLog.new.create_summary(log_date: Date.today)
-      @All_users=User.all;
+    @log_summary = DailyLog.create_user_summary(nil, nil, nil,Date.today)
+    @all_users = User.all;
   end
+
   def refresh
-     @log_summary=DailyLog.new.create_summary(log_date: params[:log_date])
-     render :partial => "daily_logs/user_summary",object: @log_summary,locals: { log_summary: @log_summary}
+    @log_summary = DailyLog.create_user_summary(nil,nil,nil, params[:log_date])
+    render :partial => "daily_logs/user_summary",locals: { log_summary: @log_summary}
   end
+
   def user_logs
-     query_hash = {}
-     if(!params[:user_id].nil?)
-      query_hash.merge!(user_id: params[:user_id])
-     else
-      query_hash.merge!(user_id: current_user.id)
-    end
-    if(!params[:start_date].nil?)
-      query_hash.merge!(log_date: params[:start_date]..params[:end_date])
-    else
-     query_hash.merge!(log_date: 1.week.ago..Date.today)
-   end
-     if(params[:project_id].nil? or params[:project_id].empty?)
-       @user_logs=DailyLog.new.user_create_summary(query_hash,nil)
-     else
-       @user_logs=DailyLog.new.user_create_summary(query_hash,params[:project_id])
-     end
-
-    render :partial => "daily_logs/user_summary",object: @user_logs,locals: { log_summary: @user_logs}
+    @user_logs = DailyLog.create_user_summary(params,current_user.id,params[:project_id],nil) 
+    render :partial => "daily_logs/user_summary",locals: { log_summary: @user_logs}
   end
 
+  def edit_log
+    @edit_log = DailyLog.find(params[:daily_log_id]).create_summary_record(nil)
+    @projects = Project.where("name !='"+Project::LEARNING+"'")
+    @daily_log_id = params[:daily_log_id]
+  end
+
+  def update
+    begin
+      ActiveRecord::Base.transaction do
+        DailyLog.find(params[:daily_log_id]).update_daily_log_and_log_entries(params[:log_entries],params[:learning_log],params[:takeaway],params[:new_log_entries])
+      end
+      flash[:info] = "Updated successfully"
+      redirect_to new_daily_log_path
+    rescue
+      flash[:info] = "Update failed,Please try again"
+      redirect_to new_daily_log_path
+    end
+  end
 end
+

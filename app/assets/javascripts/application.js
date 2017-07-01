@@ -16,5 +16,6 @@
 //= require bootstrap-sprockets
 //= require cocoon
 //= require daily_log
+//= require edit_log
 
  

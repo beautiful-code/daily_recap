@@ -2,35 +2,45 @@
   %div.row
     %div.col-md-8.page
       .row
-        .col-md-4
+        .col-md-1
+          = image_tag (image_url(value[:picture] )), class:"imagecircle"
+        .col-md-3
           %h2
             =value[:name]
-        .col-md-8.pull-right
+        .col-md-8.pull-right.datecolor
           =value[:logdate]
       %h3
         Work
-      -value[:beautifulcode].each do |project,logtext|
-        %div
-          =project
-        %p
-          =logtext
+      -if value[:beautifulcode].present?
+        -value[:beautifulcode].each do |project,logtexts|
+          %a.ui.tag.label
+            =project
+          %ul
+            -logtexts.each do |logtext|
+              %li
+                =logtext[0]
       -value[:clients].each do |client,records|
-        %h5
-          =client
-        -records.each do |pname,log|
-          %div
+        -records.each do |pname,logs|
+          %a.ui.tag.label
             =pname
-          %p
-            =log
+          %ul
+            -logs.each do|log|
+              %li
+                =log[0]
+      %hr
 
       %h5
         Learning
       %p
         =value[:learning]
+      %hr
       %h5
         TakeAway
-      %p
+      %div{display:"list-item"}
         =value[:takeaway]
+      -if(current_user.id == value[:user_id])
+        %div
+          =link_to "Edit log",edit_log_path(:daily_log_id => value[:log_id]),:class => "btn btn-change btn-md pull-right"
   %br
   %br
   %br

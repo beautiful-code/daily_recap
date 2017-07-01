@@ -1,0 +1,68 @@
+%div.user_summary
+  %div.row
+    %div.col-md-8.page
+      =form_tag update_path, :method => :post do
+        .row
+          .col-md-1 
+            = image_tag (image_url(@edit_log[:picture] )), class:"imagecircle"
+          .col-md-4
+            %h2
+              =@edit_log[:name]
+          .col-md-7.pull-right.datecolor
+            =@edit_log[:logdate]
+        %h3.headerclass
+          Work
+        -if @edit_log[:beautifulcode].present?
+          -@edit_log[:beautifulcode].each do |project,logtexts|
+            %div
+              %div
+                =select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "#{project}", :value => @projects.where(:name =>"#{project}").pluck(:id).first.to_s,:class => "added"
+              %h5.task
+                Task
+              %div
+                %div
+                  -logtexts.each do |logtext|
+                    =text_field_tag("log_entries["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
+                    %br
+                %button.btn.btn-default.add_field_button
+                  Add Task
+            %br
+        %div.project
+          -@edit_log[:clients].each do |client,records|
+            -records.each do |project,logtexts|
+              %div
+                %div
+                  =select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "#{project}", :value => @projects.where(:name =>"#{project}").pluck(:id).first.to_s,:class => "added"
+                %h5.task
+                  Task
+                %div
+                  %div
+                    -logtexts.each do |logtext|
+                      =text_field_tag("log_entries["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
+                      %br
+                  %button.btn.btn-default.add_field_button{"id"=>"company"}
+                    Add Task
+                  %hr
+        %button.btn.btn-default.add_project_button
+          Add Project
+        %br
+
+        %h5
+          Learning
+        %p
+          =text_field_tag("learning_log","#{@edit_log[:learning]}",:class => "form-control")
+        %h5
+          TakeAway
+        %p
+          =text_field_tag("takeaway","#{@edit_log[:takeaway]}",class: "form-control")
+        %input{"type" => "hidden","value" => "#{@daily_log_id}","name" => "daily_log_id"}
+        %hr
+          = submit_tag("Submit", class: "btn btn-change btn-md btn-md pull-right" ) 
+
+  %br
+  %br
+  %br
+
+
+:javascript
+  EditLog();
