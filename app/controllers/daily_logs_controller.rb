@@ -1,7 +1,6 @@
 class DailyLogsController < ApplicationController
   include DailyLogsHelper
   skip_before_action :verify_authenticity_token
-  #TODO change the flow, so that you even need to authenticate_user on index action
   before_action  :authenticate_user, :except=>[:index]
 
   def new
