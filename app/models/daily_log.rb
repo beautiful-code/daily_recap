@@ -81,10 +81,6 @@ class DailyLog < ApplicationRecord
     query_hash
   end
   def self.check_log_entry_exists(user_id,log_date)
-    if(DailyLog.where(user_id: user_id, log_date:log_date).count==0)
-      true
-    else
-      false
-    end
+    flag = DailyLog.where(user_id: user_id, log_date:log_date).count==0 ? true : false
   end
 end
