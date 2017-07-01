@@ -4,6 +4,8 @@ class DailyLog < ApplicationRecord
   validates :user_id, presence: true
   include ApplicationHelper
 
+  # DailyLog.create_user_summary - making sense
+
   def self.create_user_summary(params,user_id, project_id, log_date)
     query_hash = {}
     query_hash = DailyLog.build_query_hash(params,user_id) if params.present?
@@ -21,6 +23,9 @@ class DailyLog < ApplicationRecord
     daily_log_summary
   end
 
+  # @daily_log.create_summary_record_hash
+  #
+  # TODO: Rename to create_summary_record_hash
   def create_summary_record(project_id)
     summary_record=Hash.new
     summary_record[:name] = self.user.name
@@ -32,8 +37,16 @@ class DailyLog < ApplicationRecord
     summary_record[:clients] = self.clients_project_log_record(project_id)
     summary_record[:logdate] = self.log_date.strftime('%v')
     summary_record
+
+=begin
+  summary_record = {
+    :name => self.user.name,
+    :user_id => ...
+  }
+=end
   end
 
+  # @daily_log.clients_project_log_record_hash
   def clients_project_log_record(project_id)
     clients = Project.where.not(client_name: Project::LEARNING).distinct.pluck('client_name')
     project_logs = Hash.new()
@@ -52,6 +65,7 @@ class DailyLog < ApplicationRecord
     project_logs
   end
 
+  # TODO: Move transaction to this method and dont use it in the controller.
   def update_daily_log_and_log_entries(log_entry_records,learning,takeaway,new_log_entries)
     log_entry_records.each do |project_id,log_entries|
       log_entries.each do |log_entry_id,log_text|
@@ -80,7 +94,8 @@ class DailyLog < ApplicationRecord
     end
     query_hash
   end
+
   def self.check_log_entry_exists(user_id,log_date)
-    flag = DailyLog.where(user_id: user_id, log_date:log_date).count==0 ? true : false
+    DailyLog.where(user_id: user_id, log_date:log_date).count==0 ? true : false
   end
 end
