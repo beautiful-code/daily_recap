@@ -10,17 +10,14 @@ RSpec.describe LogEntry, type: :model do
 
   it "should belong to daily_log" do
     association = LogEntry.reflect_on_association(:daily_log)
-    #TODO reafctor all expect statements like below one
-    #association.macro.should == :belongs_to
     expect(association.macro).to eq(:belongs_to)
   end
-  #TODO add empty line each test case
   it "should belong to project" do
     association = LogEntry.reflect_on_association(:project)
-    association.macro.should == :belongs_to
+    expect(association.macro).to eq(:belongs_to)
   end
   it "should have valid log_text" do
-    #TODO fill this
 
+    expect(entry.log_text.to_s.length).to be > 0
   end
 end

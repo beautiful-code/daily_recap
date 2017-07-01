@@ -19,7 +19,7 @@ function EditLog() {
       $(this).parent().parent().children().eq(2).children().eq(0).children().filter('.NewlyAdded').attr('name',name);
       $(this).parent().parent().children().eq(2).children().eq(0).children().filter('.existing').each(function(i){
         var oldName= $(this).attr('name');
-        var newName='Logtext['+project_id+']'+oldName.substring(oldName.lastIndexOf('['));
+        var newName='log_entries['+project_id+']'+oldName.substring(oldName.lastIndexOf('['));
         $(this).attr('name',newName);
       });
     });

@@ -6,18 +6,12 @@ class DailyLogsController < ApplicationController
 
   def new
     @daily_log = current_user.daily_logs.new
-    #TODO dont hard code learning project
-    @projects = Project.where("name != 'Learning'")
-    #TODO use space after comma, prefer named arguments, last parameter you are sending is nil but I dont know which
-    # value you are sending nil, if you args looks like this DailyLog.create_user_summary(something: nil)
-    # it would be better
-    @user_log_summary = DailyLog.create_user_summary(params,current_user.id,params[:project_id],nil)
+    @projects = Project.where("name !='"+Project::LEARNING+"'") 
+    @user_log_summary = DailyLog.create_user_summary(params,current_user.id, params[:project_id],log_date:nil)
   end
 
   def create
-    #TODO move this logic to model it should return flags respectively, so that you can set flash messages here
-    # after moving this to a method write specs for it
-    if(DailyLog.where(user_id: current_user.id,log_date:params[:datetime_ida]).count==0)
+    if(DailyLog.check_log_entry_exists(current_user.id,params[:datetime_ida]))
       begin
         ActiveRecord::Base.transaction do
           daily_log = current_user.daily_logs.create(takeaway: params[:takeaway],log_date: params[:datetime_ida])
@@ -43,7 +37,7 @@ class DailyLogsController < ApplicationController
   end
 
   def people_logs
-    @log_summary = DailyLog.create_user_summary(nil,nil,nil,Date.today)
+    @log_summary = DailyLog.create_user_summary(nil, nil, nil,Date.today)
     @all_users = User.all;
   end
 
@@ -59,24 +53,14 @@ class DailyLogsController < ApplicationController
 
   def edit_log
     @edit_log = DailyLog.find(params[:daily_log_id]).create_summary_record(nil)
-    #TODO dont hard code values
-    @projects = Project.where("name != 'Learning'")
+    @projects = Project.where("name !='"+Project::LEARNING+"'")
     @daily_log_id = params[:daily_log_id]
   end
 
   def update
-    #TODO move this logic to model method, change update_daily_log_and_log_entries to
-    # to do all this logic
     begin
       ActiveRecord::Base.transaction do
-        DailyLog.find(params[:daily_log_id]).update_daily_log_and_log_entries(params[:log_entries],params[:learning_log],params[:takeaway])
-        if(!params[:new_log_entries].nil?)
-          params[:new_log_entries].each do |project_id,log_entries|
-            log_entries.each do|logtext|
-              DailyLog.find(params[:daily_log_id]).log_entries.create(project_id:project_id,log_text:logtext) 
-            end
-          end
-        end
+        DailyLog.find(params[:daily_log_id]).update_daily_log_and_log_entries(params[:log_entries],params[:learning_log],params[:takeaway],params[:new_log_entries])
       end
       flash[:info] = "Updated successfully"
       redirect_to new_daily_log_path

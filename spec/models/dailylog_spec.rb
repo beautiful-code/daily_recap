@@ -4,31 +4,21 @@ RSpec.describe DailyLog, type: :model do
   let(:daily_log) { FactoryGirl.build(:daily_log) }
   let(:log_entry) { FactoryGirl.build(:log_entry) }
   let(:project) { FactoryGirl.create(:project) }
-  let(:learning_project) { FactoryGirl.build(:project) }
-  let(:learning) { FactoryGirl.build(:log_entry) }
-  let(:revdirect) { FactoryGirl.build(:project) }
-  let(:revdirect_log_entry) { FactoryGirl.build(:log_entry) }
+  let(:learning_project) { Project.create(name: "Learning", client_name: "Learning") }
+  let(:learning) { LogEntry.new }
+  let(:revdirect) { Project.create(name:"revdirect", client_name:"Sojern") }
+  let(:revdirect_log_entry) { LogEntry.new }
   before do
+    Project.delete_all
+    LogEntry.delete_all
     daily_log.user_id=user.id
     daily_log.save
     log_entry.daily_log_id=daily_log.id
     log_entry.project_id=project.id
     log_entry.save
-    #TODO learning_project = Project.create(name: "Learning", client_name: "Learning")
-    learning_project.name="Learning"
-    learning_project.client_name="Learning"
-    learning_project.save
-    learning.daily_log_id=daily_log.id
-    learning.project_id=learning_project.id
-    learning.log_text ="advanced jquery"
+    learning.update_attributes(daily_log_id: daily_log.id,project_id: learning_project.id,log_text: "advanced jquery")
     learning.save
-    #TODO chnage this same as above one
-    revdirect.name="revdirect"
-    revdirect.client_name="Sojern"
-    revdirect.save
-    revdirect_log_entry.log_text ="solved ticket 3"
-    revdirect_log_entry.project_id =revdirect.id
-    revdirect_log_entry.daily_log_id=daily_log.id
+    revdirect_log_entry.update_attributes(log_text:"Solved ticket 3", project_id: revdirect.id , daily_log_id: daily_log.id)
     revdirect_log_entry.save
   end
 
@@ -61,7 +51,6 @@ RSpec.describe DailyLog, type: :model do
     total_count =LogEntry.all.count
     daily_log.destroy
 
-    #TODO instead you can check expect(daily_log.log_entries.count).to eq(0)
     expect(LogEntry.all.count).to eq(total_count-count)
   end
 
@@ -71,13 +60,9 @@ RSpec.describe DailyLog, type: :model do
 
       expect(daily_log.errors).to include(:user_id)
     end
-    #TODO when you add custom validation to restrict one daily_log record per user per given date add specs for it
-
   end
 
-  #TODO it should be create_user_summary
-  describe :user_create_summary do
-    #TODO when params.present? if false write case for it
+  describe :create_user_summary do
     context "when project id is nil" do
       it "should return daily logs for all projects" do
         params= { user_id: user.id }
@@ -95,17 +80,16 @@ RSpec.describe DailyLog, type: :model do
       end
     end
     context "when project_id and query_hash are not present and log date is present" do
-     it "should return daily logs of all users for that particular date" do
-       records= daily_log.class.create_user_summary(nil,nil,nil,Date.today)
+      it "should return daily logs of all users for that particular date" do
+        records= daily_log.class.create_user_summary(nil,nil,nil,Date.today)
 
         expect(records.values.first[:logdate]).to eq(Date.today.strftime('%v'))
-     end
+      end
     end
   end
 
   describe :create_summary_record do
     before do
-      #TODO instead of returning nil return what sample data of what that method actually should return
       allow(daily_log).to receive(:clients_project_log_record).and_return nil
     end
     it 'should return formatted daily log record' do
@@ -114,8 +98,71 @@ RSpec.describe DailyLog, type: :model do
       expect(record.keys).to match_array([:name, :takeaway, :learning,:clients,:log_id,:logdate,:picture,:user_id])
     end
   end
-  #TODO add empty line after every block
-  ##TODO write specs for methods in the same order as written in model file
+
+  describe :clients_project_log_record do
+    context "when project filter not applied" do
+      it "should return all project log entries" do
+        record = daily_log.clients_project_log_record(nil)
+        expect(record.values.first.keys).to match_array(["macnator","revdirect"])
+      end
+    end
+    context "when project filter applied" do
+      it "should return project specific log entries" do
+        record =daily_log.clients_project_log_record(revdirect.id)
+        expect(record.values.first.keys).to match_array(["revdirect"])
+      end
+    end
+    it "should not return learning log entries" do
+      record = daily_log.clients_project_log_record(nil)
+      project_record = daily_log.clients_project_log_record(revdirect.id)
+
+      expect(record.values.first.keys).to match_array(["macnator","revdirect"])
+      expect(project_record.values.first.keys).to match_array(["revdirect"])
+
+    end
+  end
+
+  describe :update_daily_log_and_log_entries do
+    context "when new log entries added for dailylog" do
+      it "should add those logentries to database" do
+        log_entries = {revdirect.id => {revdirect_log_entry.id => "edited"}}
+        new_log_entries = { revdirect.id =>["new_record"] }
+        takeaway = "checing_updation"
+        learning = "checking_updation"
+        before_count = daily_log.log_entries.count
+        daily_log.update_daily_log_and_log_entries(log_entries,learning,takeaway,new_log_entries)
+        after_count =daily_log.log_entries.count
+
+        expect(after_count).to eq(before_count+1)
+
+      end
+    end
+    context "when existing records are modified" do
+      it "should update those  logentries in database" do
+        log_entries = {revdirect.id => {revdirect_log_entry.id => "edited"}}
+        takeaway = "checking_updation"
+        learning = "checking_updation"
+        daily_log.update_daily_log_and_log_entries(log_entries,learning,takeaway,nil)
+
+        expect(daily_log.log_entries.find(revdirect_log_entry.id).log_text).to eq("edited")
+        expect(daily_log.takeaway).to eq("checking_updation")
+      end
+    end
+    context "when no new log_entries are added for daily_log" do
+      it "should not add any log entries in database for that daily_log" do
+        log_entries = {revdirect.id => {revdirect_log_entry.id => "edited"}}
+        takeaway = "checking_updation"
+        learning = "checking_updation"
+        before_count =daily_log.log_entries.count
+        daily_log.update_daily_log_and_log_entries(log_entries,learning,takeaway,nil)
+        updated_count = daily_log.log_entries.count
+
+        expect(updated_count).to eq(before_count)
+      end
+    end
+  end
+
+
   describe :build_query_hash do 
     context "when date filter applied" do
       it "should return valid hash" do
@@ -138,20 +185,19 @@ RSpec.describe DailyLog, type: :model do
     end
   end
 
-  describe :clients_project_log_record do
-    context "when project filter not applied" do
-      it "should return all project log entries" do
-        record =daily_log.clients_project_log_record(nil)
-        expect(record.values.first.keys).to match_array(["macnator","revdirect"])
+  describe :check_log_entry_exists do
+    context "when log entry for the day exists" do
+      it "should return false " do
+        flag = daily_log.class.check_log_entry_exists(user.id, Date.today)
+        expect(flag).to eq(false)
       end
     end
-    context "when project filter applied" do
-      it "should return project specific log entries" do
-        record =daily_log.clients_project_log_record(revdirect.id)
-        expect(record.values.first.keys).to match_array(["revdirect"])
+    context "when log entry for the day does not exists" do
+      it "should return true" do
+        flag = daily_log.class.check_log_entry_exists(user.id, Date.yesterday)
+        expect(flag).to eq(true)
       end
     end
-    #TODO add a case to test that record.values.first.keys not to include "learning"
   end
 end
 

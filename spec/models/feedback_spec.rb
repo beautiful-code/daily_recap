@@ -1,11 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Feedback, type: :model do
-  #TODO change feedbackentry feedback_entry
-  let(:feedbackentry) { FactoryGirl.build(:feedback) }
-   [:feedback_text, :user_id,:daily_log_id].each do |msg|
+  let(:feedback_entry) { FactoryGirl.build(:feedback) }
+  [:feedback_text, :user_id,:daily_log_id].each do |msg|
     it "should respond to #{msg}" do
-      expect(feedbackentry).to respond_to(msg)
+      expect(feedback_entry).to respond_to(msg)
     end
   end
   it "should belongs to user" do
