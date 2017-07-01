@@ -11,13 +11,14 @@
           =value[:logdate]
       %h3
         Work
-      -value[:beautifulcode].each do |project,logtexts|
-        %a.ui.tag.label
-          =project
-        %ul
-          -logtexts.each do |logtext|
-            %li
-              =logtext[0]
+      -if value[:beautifulcode].present?
+        -value[:beautifulcode].each do |project,logtexts|
+          %a.ui.tag.label
+            =project
+          %ul
+            -logtexts.each do |logtext|
+              %li
+                =logtext[0]
       -value[:clients].each do |client,records|
         -records.each do |pname,logs|
           %a.ui.tag.label
@@ -39,7 +40,7 @@
         =value[:takeaway]
       -if(current_user.id == value[:user_id])
         %div
-          =link_to "Edit log",edit_log_path(:log_id => value[:log_id]),:class => "btn btn-change btn-md pull-right"
+          =link_to "Edit log",edit_log_path(:daily_log_id => value[:log_id]),:class => "btn btn-change btn-md pull-right"
   %br
   %br
   %br

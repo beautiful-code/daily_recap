@@ -6,7 +6,7 @@ FactoryGirl.define do
     provider "google"
   end
   factory :daily_log do
-    log_date '2017-05-31'
+    log_date  Date.today
     takeaway 'spend more time on learning'
     user_id '1'
   end
@@ -15,7 +15,7 @@ FactoryGirl.define do
     project_id "2"
   end
   factory :project do
-    name "revdirect"
+    name "macnator"
     client_name "Sojern"
   end
   factory :feedback do
@@ -23,4 +23,5 @@ FactoryGirl.define do
     user_id "2"
     daily_log_id "2"
   end
-end
+ end
+

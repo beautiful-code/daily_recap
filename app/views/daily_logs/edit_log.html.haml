@@ -12,20 +12,21 @@
             =@edit_log[:logdate]
         %h3.headerclass
           Work
-        -@edit_log[:beautifulcode].each do |project,logtexts|
-          %div
-            %div
-              =select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "#{project}", :value => @projects.where(:name =>"#{project}").pluck(:id).first.to_s,:class => "added"
-            %h5.task
-              Task
+        -if @edit_log[:beautifulcode].present?
+          -@edit_log[:beautifulcode].each do |project,logtexts|
             %div
               %div
-                -logtexts.each do |logtext|
-                  =text_field_tag("log_entries["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
-                  %br
-              %button.btn.btn-default.add_field_button
-                Add Task
-          %br
+                =select_tag "projects[]", options_for_select(@projects.map {|u| [u.name,u.id]}),:onchange => "alert_me_test()",:include_blank => "#{project}", :value => @projects.where(:name =>"#{project}").pluck(:id).first.to_s,:class => "added"
+              %h5.task
+                Task
+              %div
+                %div
+                  -logtexts.each do |logtext|
+                    =text_field_tag("log_entries["+@projects.where(:name =>"#{project}").pluck(:id).first.to_s+"]["+logtext[1].to_s+"]","#{logtext[0]}",:class => "form-control existing")
+                    %br
+                %button.btn.btn-default.add_field_button
+                  Add Task
+            %br
         %div.project
           -@edit_log[:clients].each do |client,records|
             -records.each do |project,logtexts|

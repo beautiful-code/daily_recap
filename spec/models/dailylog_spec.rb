@@ -1,14 +1,33 @@
 require 'rails_helper'
 RSpec.describe DailyLog, type: :model do
-  #pending "add some examples to (or delete) #{__FILE__}"
   let(:user) {User.create(name:"avinash",email:"avinash@beautifulcode.in")  }
   let(:daily_log) { FactoryGirl.build(:daily_log) }
   let(:log_entry) { FactoryGirl.build(:log_entry) }
+  let(:project) { FactoryGirl.create(:project) }
+  let(:learning_project) { FactoryGirl.build(:project) }
+  let(:learning) { FactoryGirl.build(:log_entry) }
+  let(:revdirect) { FactoryGirl.build(:project) }
+  let(:revdirect_log_entry) { FactoryGirl.build(:log_entry) }
   before do
     daily_log.user_id=user.id
     daily_log.save
     log_entry.daily_log_id=daily_log.id
+    log_entry.project_id=project.id
     log_entry.save
+    learning_project.name="Learning"
+    learning_project.client_name="Learning"
+    learning_project.save
+    learning.daily_log_id=daily_log.id
+    learning.project_id=learning_project.id
+    learning.log_text ="advanced jquery"
+    learning.save
+    revdirect.name="revdirect"
+    revdirect.client_name="Sojern"
+    revdirect.save
+    revdirect_log_entry.log_text ="solved ticket 3"
+    revdirect_log_entry.project_id =revdirect.id
+    revdirect_log_entry.daily_log_id=daily_log.id
+    revdirect_log_entry.save
   end
 
   [:log_date, :takeaway].each do |msg|
@@ -19,36 +38,34 @@ RSpec.describe DailyLog, type: :model do
 
   it "should have many log_entries" do
     association = DailyLog.reflect_on_association(:log_entries)
-    association.macro.should == :has_many
 
     expect(association.macro).to eq(:has_many)
   end
 
   it 'should belong to a user' do
     association = DailyLog.reflect_on_association(:user)
-    #TODO refactor this
-    association.macro.should == :belongs_to
+
+    expect(association.macro).to eq(:belongs_to)
   end
 
-  it 'should have only one dailylog entry for given date for given user' do
+  it 'should have  one or none  dailylog entry for given date for given user' do
     @dailylog = DailyLog.where(log_date: Date.today,user_id: 1)
-    #expect(@dailylog.count). to be <= 1
 
-    expect(@dailylog.count).to eq(1)
+    expect(@dailylog.count).to be <= 1
   end
 
   it 'should delete all associated log entries on deleting daily log' do
-    #count = DailyLog.first.log_entries.count
-    #total_count = LogEntry.all.count
-    #DailyLog.first.destroy
-    #expect(LogEntry.all.count).to equal(total_count - count)
-    #count =daily_log.log_entries.count
-    count=LogEntry.all.count
-    expect(count).to eq(1)
+    count =daily_log.log_entries.count
+    total_count =LogEntry.all.count
+    daily_log.destroy
+
+    expect(LogEntry.all.count).to eq(total_count-count)
   end
+
   describe 'validations' do
     it 'should have valid user_id' do
       daily_log.update_attributes(user_id: nil)
+
       expect(daily_log.errors).to include(:user_id)
     end
 
@@ -56,38 +73,74 @@ RSpec.describe DailyLog, type: :model do
 
   describe :user_create_summary do
     context "when project id is nil" do
-      it "should return daily logs for als projects" do
+      it "should return daily logs for all projects" do
+        params= { user_id: user.id }
+        records = daily_log.class.create_user_summary(params,nil,nil,nil)
 
+        expect(records.values.first[:clients].values.first.keys).to match_array(["macnator","revdirect"])
       end
     end
-
     context "when project id is not nil" do
+      it "should return daily_logs for specific project" do
+        params ={user_id: user.id}
+        records= daily_log.class.create_user_summary(params,nil,revdirect.id,nil)
 
+        expect(records.values.first[:clients].values.first.keys).to match_array(["revdirect"])
+      end
     end
-
     context "when project_id and query_hash are not present and log date is present" do
+     it "should return daily logs of all users for that particular date" do
+       records= daily_log.class.create_user_summary(nil,nil,nil,Date.today)
 
+        expect(records.values.first[:logdate]).to eq(Date.today.strftime('%v'))
+     end
     end
-
   end
 
-  describe :create_record do
-    log=DailyLog.new
-    query_hash={user_id: 1,log_date:1.week.ago..Date.today}
+  describe :create_summary_record do
     before do
-      log.id=1
-      log.user_id = 1
-      log.log_date=Date.today
-      log.takeaway="need to improve"
-      log.save
-      allow(log).to receive(:beautifulcode_log_record).and_return nil
-      allow(log).to receive(:clients_project_log_record).and_return nil
+      allow(daily_log).to receive(:clients_project_log_record).and_return nil
     end
     it 'should return formatted daily log record' do
-      #:log_date = Date.today
-      record = log.class.user_create_summary(query_hash,nil,nil)
-      expect(record.keys).to match_array([:name, :takeaway, :learning, :beautifulcode, :clients])
-      expect(record.keys).to match_array([:name])
+      record = daily_log.create_summary_record(nil)
+
+      expect(record.keys).to match_array([:name, :takeaway, :learning,:clients,:log_id,:logdate,:picture,:user_id])
+    end
+  end
+  describe :build_query_hash do 
+    context "when date filter applied" do
+      it "should return valid hash" do
+        params = { user_id: 1, start_date: '25-07-2017',end_date: '30-07-2017' }
+        query_hash = daily_log.class.build_query_hash(params,nil)
+
+        expect(query_hash.keys).to match_array([:user_id,:log_date])
+        expect(query_hash.values[1]).to eq("25-07-2017".."30-07-2017")
+      end
+    end
+    context "when date filter not applied" do
+      it "should return valid hash" do 
+        params={ user_id: 1 }
+        query_hash= daily_log.class.build_query_hash(params,nil) 
+        value= 1.week.ago.strftime('%v')..Date.today.strftime('%v')
+
+        expect(query_hash.keys).to match_array([:user_id,:log_date])
+        expect(query_hash.values[1]).to eq(value)
+      end
+    end
+  end
+
+  describe :clients_project_log_record do
+    context "when project filter not applied" do
+      it "should return all project log entries" do
+        record =daily_log.clients_project_log_record(nil)
+        expect(record.values.first.keys).to match_array(["macnator","revdirect"])
+      end
+    end
+    context "when project filter applied" do
+      it "should return project specific log entries" do
+        record =daily_log.clients_project_log_record(revdirect.id)
+        expect(record.values.first.keys).to match_array(["revdirect"])
+      end
     end
   end
 end
